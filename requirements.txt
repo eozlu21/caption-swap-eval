@@ -1,0 +1,6 @@
+openai>=1.40.0
+python-dotenv>=1.0.1
+datasets>=2.20.0
+pydantic>=2.8.2
+typing-extensions>=4.12.2
+pytest>=8.2.0
