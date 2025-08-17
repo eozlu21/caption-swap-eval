@@ -73,7 +73,9 @@ class FullState(BaseModel):
     def correctness_map(self) -> Dict[int, bool]:
         correct: Dict[int, bool] = {}
         for a in self.public.assignments:
-            correct[a.image_id] = self.private.mapping.get(a.image_id) == a.caption_id_assigned
+            correct[a.image_id] = (
+                self.private.mapping.get(a.image_id) == a.caption_id_assigned
+            )
         return correct
 
     def set_correctness(self) -> None:
@@ -84,8 +86,16 @@ class FullState(BaseModel):
 
     def apply_swap(self, swap: Swap) -> None:
         # find entries by image_id
-        idx_a = next(i for i, a in enumerate(self.public.assignments) if a.image_id == swap.image_id_a)
-        idx_b = next(i for i, a in enumerate(self.public.assignments) if a.image_id == swap.image_id_b)
+        idx_a = next(
+            i
+            for i, a in enumerate(self.public.assignments)
+            if a.image_id == swap.image_id_a
+        )
+        idx_b = next(
+            i
+            for i, a in enumerate(self.public.assignments)
+            if a.image_id == swap.image_id_b
+        )
         a_entry = self.public.assignments[idx_a]
         b_entry = self.public.assignments[idx_b]
         # swap assigned captions
@@ -113,4 +123,5 @@ class TranscriptEntry(BaseModel):
 
 
 def ensure_derangement(permutation: List[int]) -> bool:
-    return all(i != p for i, p in enumerate(permutation))
+    # permutation is over 1-based ids; treat index positions as 1-based
+    return all((i + 1) != p for i, p in enumerate(permutation))
